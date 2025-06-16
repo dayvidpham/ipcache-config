@@ -48,8 +48,6 @@
     , determinate
     , home-manager
     , nil-lsp
-      # My own config
-    , dayvidpham
     , ...
     }:
     let
@@ -87,50 +85,41 @@
       };
 
       # NOTE: Needs to be defined here to have access to nixpkgs and home-manager inputs
-      noChannelModule = (
-        { nixpkgs
-        , nixpkgs-stable
-        , nixpkgs-unstable
-        , home-manager
-        , flake-registry
-        , ...
-        }:
-        {
-          nix.settings.experimental-features = [
-            "nix-command"
-            "ca-derivations"
-            "dynamic-derivations"
-            "flakes"
-            "fetch-closure"
-            "pipe-operators"
-          ];
-          nix.channel.enable = false;
+      noChannelModule = {
+        nix.settings.experimental-features = [
+          "nix-command"
+          "ca-derivations"
+          "dynamic-derivations"
+          "flakes"
+          "fetch-closure"
+          "pipe-operators"
+        ];
+        nix.channel.enable = false;
 
-          nix.registry.nixpkgs.flake = nixpkgs;
-          nix.registry.home-manager.flake = home-manager;
-          nix.registry.nixpkgs-unstable.flake = nixpkgs-unstable;
-          nix.registry.nixpkgs-stable.flake = nixpkgs-stable;
-          environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
-          environment.etc."nix/inputs/nixpkgs-unstable".source = "${nixpkgs-unstable}";
-          environment.etc."nix/inputs/nixpkgs-stable".source = "${nixpkgs-stable}";
-          environment.etc."nix/inputs/home-manager".source = "${home-manager}";
+        nix.registry.nixpkgs.flake = nixpkgs;
+        nix.registry.home-manager.flake = home-manager;
+        nix.registry.nixpkgs-unstable.flake = nixpkgs-unstable;
+        nix.registry.nixpkgs-stable.flake = nixpkgs-stable;
+        environment.etc."nix/inputs/nixpkgs".source = "${nixpkgs}";
+        environment.etc."nix/inputs/nixpkgs-unstable".source = "${nixpkgs-unstable}";
+        environment.etc."nix/inputs/nixpkgs-stable".source = "${nixpkgs-stable}";
+        environment.etc."nix/inputs/home-manager".source = "${home-manager}";
 
-          nix.nixPath = lib.mkForce [
-            "nixpkgs=/etc/nix/inputs/nixpkgs"
-            "nixpkgs-unstable=/etc/nix/inputs/nixpkgs-unstable"
-            "nixpkgs-stable=/etc/nix/inputs/nixpkgs-stable"
-            "home-manager=/etc/nix/inputs/home-manager"
-          ];
-          nix.settings.nix-path = lib.mkForce [
-            "nixpkgs=/etc/nix/inputs/nixpkgs"
-            "nixpkgs-unstable=/etc/nix/inputs/nixpkgs-unstable"
-            "nixpkgs-stable=/etc/nix/inputs/nixpkgs-stable"
-            "home-manager=/etc/nix/inputs/home-manager"
-          ];
+        nix.nixPath = lib.mkForce [
+          "nixpkgs=/etc/nix/inputs/nixpkgs"
+          "nixpkgs-unstable=/etc/nix/inputs/nixpkgs-unstable"
+          "nixpkgs-stable=/etc/nix/inputs/nixpkgs-stable"
+          "home-manager=/etc/nix/inputs/home-manager"
+        ];
+        nix.settings.nix-path = lib.mkForce [
+          "nixpkgs=/etc/nix/inputs/nixpkgs"
+          "nixpkgs-unstable=/etc/nix/inputs/nixpkgs-unstable"
+          "nixpkgs-stable=/etc/nix/inputs/nixpkgs-stable"
+          "home-manager=/etc/nix/inputs/home-manager"
+        ];
 
-          nix.settings.flake-registry = "${flake-registry}/flake-registry.json";
-        }
-      );
+        nix.settings.flake-registry = "${flake-registry}/flake-registry.json";
+      };
 
     in
     {
@@ -141,14 +130,15 @@
           noChannelModule
           ./configuration.nix
           home-manager.nixosModules.default
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.app = [
-              dayvidpham.homeModules.default
-              ./home.nix
-            ];
-          }
+          ({ config
+           , lib ? home-manager.lib
+           , ...
+           }:
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.app = ./home.nix;
+            })
         ];
       };
     };

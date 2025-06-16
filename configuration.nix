@@ -18,6 +18,7 @@
     ./hardware-configuration.nix
   ];
 
+  system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12;
   time.timeZone = "America/Vancouver";
 

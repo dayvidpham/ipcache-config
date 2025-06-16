@@ -22,8 +22,6 @@
     XDG_STATE_HOME = "${config.xdg.stateHome}";
   };
 
-  dconf.enable = true;
-
   #####################
   # NOTE: General programs and packages
   home.packages = (with pkgs; [
@@ -41,7 +39,7 @@
 
   # NOTE: Zsh setup
   # Manual setup: don't like how home-manager currently sets up zsh
-  CUSTOM.programs.zsh.enable = true;
+  programs.zsh.enable = true;
   programs.zoxide = {
     enable = true;
     enableZshIntegration = config.programs.zsh.enable;
