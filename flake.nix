@@ -27,15 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    dayvidpham = {
-      url = "github:dayvidpham/dotfiles";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-      inputs.determinate.follows = "determinate";
-      inputs.home-manager.follows = "home-manager";
-      inputs.nil-lsp.follows = "nil-lsp";
-    };
   };
 
   outputs =
