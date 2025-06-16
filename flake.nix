@@ -1,10 +1,10 @@
 {
-  inputs = rec {
+  inputs = {
     #############################
     # NixOS-related inputs
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs.url = nixpkgs-stable.url;
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
     flake-registry = {
       url = "github:nixos/flake-registry";
@@ -16,7 +16,7 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     home-manager = {
-      url = "github:nix-community/home-manager/25.05";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
@@ -139,16 +139,15 @@
         modules = [
           determinate.nixosModules.default
           noChannelModule
-          dayvidpham.nixosModules.system
           ./configuration.nix
           home-manager.nixosModules.default
           {
-            modules = [
-              dayvidpham.nixosModules.home-manager
-            ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.app = ./home.nix;
+            home-manager.users.app = [
+              dayvidpham.homeModules.default
+              ./home.nix
+            ];
           }
         ];
       };
