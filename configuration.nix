@@ -24,10 +24,14 @@
   ####################################
   # 'app' user setup
 
+  users.groups.app.name = "app";
+  users.groups.app.gid = 1000;
+
   users.users.app.enable = true;
   users.users.app.name = "app";
-  users.users.app.group = "app";
+  users.users.app.group = "users";
   users.users.app.extraGroups = [
+    "app"
     "ipcache"
     "wireguard"
     "vpn"
