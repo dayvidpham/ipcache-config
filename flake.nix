@@ -126,13 +126,13 @@
 
     in
     {
-      nixosConfigurations.ipcache = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.vpn = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = ipcacheModules ++ [
         ];
       };
 
-      nixosConfigurations.ipcache-vm = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.vpn-vm = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         specialArgs = extraSpecialArgs;
         modules =
@@ -165,8 +165,13 @@
       # 3. Flake outputs for building and running the VM.
       #    The platform here is your HOST's platform (e.g., x86_64-linux).
       # ===================================================================
-      packages."x86_64-linux".ipcache-vm-runner =
-        self.nixosConfigurations.ipcache-vm.config.system.build.vm;
+      packages."x86_64-linux".vpn-vm-runner =
+        self.nixosConfigurations.vpn-vm.config.system.build.vm;
+
+      packages."aarm64-linux".oci-image =
+        self.nixosConfigurations.vpn.config.system.build.images.oci;
+      packages."x86_64-linux".oci-image =
+        self.nixosConfigurations.vpn.config.system.build.images.oci;
     };
 }
 
