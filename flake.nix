@@ -106,27 +106,67 @@
         nix.settings.flake-registry = "${flake-registry}/flake-registry.json";
       };
 
+
+      ipcacheModules = [
+        impermanence.nixosModules.impermanence
+        determinate.nixosModules.default
+        noChannelModule
+        ./configuration.nix
+        home-manager.nixosModules.default
+        ({ config
+         , lib ? home-manager.lib
+         , ...
+         }:
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.app = ./home.nix;
+          })
+      ];
+
     in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.ipcache = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-        modules = [
-          impermanence.nixosModules.impermanence
-          determinate.nixosModules.default
-          noChannelModule
-          ./configuration.nix
-          home-manager.nixosModules.default
-          ({ config
-           , lib ? home-manager.lib
-           , ...
-           }:
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.app = ./home.nix;
-            })
+        modules = ipcacheModules ++ [
         ];
       };
+
+      nixosConfigurations.ipcache-vm = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        specialArgs = extraSpecialArgs;
+        modules =
+          # The key: reuse ALL modules from the original `ipcache` config...
+          ipcacheModules
+          ++ [
+            # ...and add two more modules.
+
+            # A. The module that enables building a QEMU VM runner script.
+            "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
+
+            # B. An inline module to specify hardware resources.
+            ({ ... }: {
+              # Define the QEMU hardware settings. These are used by qemu-vm.nix
+              # to generate the correct runner script.
+              virtualisation.cores = 8;
+              virtualisation.memorySize = 16 * 1024; # 16 GB in MB
+
+              virtualisation.forwardPorts = [
+                { host.port = 10022; guest.port = 22; } # Forward host port 2222 to guest port 22 for SSH
+              ];
+
+              # It's good practice to ensure it uses UEFI boot for aarch64
+              virtualisation.useEFIBoot = true;
+            })
+          ];
+      };
+
+      # ===================================================================
+      # 3. Flake outputs for building and running the VM.
+      #    The platform here is your HOST's platform (e.g., x86_64-linux).
+      # ===================================================================
+      packages."x86_64-linux".ipcache-vm-runner =
+        self.nixosConfigurations.ipcache-vm.config.system.build.vm;
     };
 }
 

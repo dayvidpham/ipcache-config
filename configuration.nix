@@ -13,7 +13,16 @@
     "${modulesPath}/profiles/hardened.nix"
   ];
 
+  ####################################
+  # VM options
+
+  oci.efi = true;
   nixpkgs.hostPlatform = "aarch64-linux";
+
+
+  ####################################
+  # General system
+
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
   time.timeZone = "America/Vancouver";
@@ -24,7 +33,7 @@
   # https://archive.is/ZzBkF
 
   security.polkit.enable = true;
-  nix.allowedUsers = [ "root" ];
+  nix.settings.allowed-users = [ "root" ];
   security.sudo.execWheelOnly = true;
   security.allowSimultaneousMultithreading = true; # set to false by hardened, whatever
 
@@ -54,18 +63,22 @@
 
 
   # Only allow executables from /nix/store
-  fileSystems."/".ooptions = [ "noexec" ];
-  fileSystems."/etc/nixos".ooptions = [ "noexec" ];
-  fileSystems."/srv".ooptions = [ "noexec" ];
-  fileSystems."/var/log".ooptions = [ "noexec" ];
+  fileSystems."/".options = [ "noexec" ];
+  fileSystems."/etc/nixos".options = [ "noexec" ];
+  fileSystems."/srv".options = [ "noexec" ];
+  fileSystems."/var/log".options = [ "noexec" ];
 
 
   ####################################
   # systemd-networkd setup
 
   networking.hostName = "vpn";
-  systemd.network.enable = true;
+  networking.useNetworkd = true;
+  networking.useDHCP = true;
+  #networking.usePredictableInterfaceNames = true;
 
+  systemd.network.enable = true;
+  systemd.network.wait-online.enable = true;
 
   ####################################
   # 'app' user setup
