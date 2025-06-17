@@ -31,6 +31,7 @@
 
     # Cloud
     openssl
+    git
   ]);
 
 
@@ -39,6 +40,7 @@
 
   # NOTE: Zsh setup
   # Manual setup: don't like how home-manager currently sets up zsh
+
   programs.zsh.enable = true;
   programs.zoxide = {
     enable = true;

@@ -20,13 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    #############################
-    # Community tools
-    nil-lsp = {
-      url = "github:oxalica/nil";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
-
+    impermanence.url = "github:nix-community/impermanence";
   };
 
   outputs =
@@ -38,7 +32,8 @@
       # Package management
     , determinate
     , home-manager
-    , nil-lsp
+      # wipe fs each boot
+    , impermanence
     , ...
     }:
     let
@@ -71,7 +66,6 @@
         inherit
           pkgs-unstable
           pkgs-stable
-          nil-lsp
           ;
       };
 
@@ -117,6 +111,7 @@
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
+          impermanence.nixosModules.impermanence
           determinate.nixosModules.default
           noChannelModule
           ./configuration.nix
