@@ -16,7 +16,6 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     impermanence.url = "github:nix-community/impermanence";
-    impermanence.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -174,4 +173,8 @@
       nixosConfigurations.x86_64-linux = packages.x86_64-linux.nixosConfigurations;
     };
 }
+
+
+
+
 
