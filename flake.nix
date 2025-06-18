@@ -114,7 +114,7 @@
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
             in
             nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.buildPlatform;
+              system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
               modules = alienSystemArgs.ipcacheModules ++ [
               ];
@@ -124,8 +124,9 @@
             let
               alienSystemArgs = mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux;
             in
-            alienSystemArgs.pkgs.crossPkgs.aarch64-multiplatform.nixos {
-              inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
+            nixpkgs.lib.nixosSystem {
+              system = alienSystemArgs.hostPlatform;
+              inherit (alienSystemArgs) specialArgs;
               modules = alienSystemArgs.ipcacheModules ++ [
               ];
             };
@@ -135,15 +136,11 @@
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
             in
             nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.buildPlatform;
+              system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
               modules = alienSystemArgs.ipcacheModules
                 ++ alienSystemArgs.vmModules
                 ++ [
-                {
-                  # Ues this system's config as an image
-                  virtualisation.diskImage = "${vpn.config.system.build.images.oci}";
-                }
               ];
             };
 
@@ -151,11 +148,13 @@
             let
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux);
             in
-            alienSystemArgs.pkgs.crossPkgs.aarch64-multiplatform.nixos {
-              inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
+            alienSystemArgs.pkgs.pkgsCross.aarch64-multiplatform.nixos {
+              system = alienSystemArgs.hostPlatform;
+              inherit (alienSystemArgs) specialArgs;
               modules = alienSystemArgs.ipcacheModules
                 ++ alienSystemArgs.vmModules
                 ++ [
+                { }
               ];
             };
 
