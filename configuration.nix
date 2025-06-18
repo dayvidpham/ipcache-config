@@ -25,7 +25,6 @@
 
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
-  time.timeZone = "America/Vancouver";
 
 
   ####################################
@@ -87,8 +86,8 @@
   users.groups.app.gid = 1000;
 
   users.users.app.enable = true;
+  users.users.app.uid = 1000;
   users.users.app.name = "app";
-  users.users.app.group = "users";
   users.users.app.extraGroups = [
     "app"
     "ipcache"
@@ -99,7 +98,6 @@
     "wheel"
   ];
   users.users.app.isNormalUser = true;
-  users.users.app.uid = 1000;
   users.users.app.linger = true;
   users.users.app.autoSubUidGidRange = true;
 
@@ -135,9 +133,9 @@
   services.openssh.settings.DenyUsers = [ "root" ];
   services.openssh.settings.DenyGroups = [ "root" ];
   services.openssh.settings.AllowGroups = [ "ssh-users" ];
-  services.openssh.settings.X11Forwarding = true;
   services.openssh.settings.AllowTcpForwarding = true;
 
+  services.openssh.settings.X11Forwarding = false;
   services.openssh.settings.AllowStreamLocalForwarding = false;
   services.openssh.settings.AllowAgentForwarding = false;
 
