@@ -34,15 +34,16 @@
       disableChannels.nixosModules.default = import ./disable-channels.nix inputs;
 
       mkFlakeArgsNixosAlienSystem =
-        { buildPlatform
-        , hostPlatform
-        , ...
-        }: rec {
+        buildPlatform:
+        hostPlatform:
+        rec {
+          inherit buildPlatform hostPlatform;
+
           nixpkgs-options = {
             # buildPlatform := the arch that produces build artifacts, may not actually boot the system
             # hostPlatform := the arch that will boot the system config
             # buildPlatform -> produces build artifacts -> system config booted by hostPlatform
-            inherit buildPlatform hostPlatform;
+
             config = {
               allowUnfree = true;
             };
@@ -63,13 +64,15 @@
           };
 
           ipcacheModules = [
+            {
+              nixpkgs = {
+                inherit buildPlatform hostPlatform;
+              };
+            }
             impermanence.nixosModules.impermanence
             determinate.nixosModules.default
             disableChannels.nixosModules.default
             ./configuration.nix
-            {
-              nixpkgs.hostPlatform.system = hostPlatform;
-            }
           ];
           vmModules = [
             # A. The module that enables building a QEMU VM runner script.
@@ -88,50 +91,79 @@
 
               # It's good practice to ensure it uses UEFI boot for aarch64
               virtualisation.useEFIBoot = true;
-
-              # Ues this system's config as an image
-              virtualisation.diskImage = config.build.system.images.oci;
             })
           ];
         };
 
-      mkNixosAlienSystem = (
-        { buildPlatform
-        , hostPlatform
-        , ...
-        }:
-        let
-          alienSystemArgs = mkFlakeArgsNixosAlienSystem buildPlatform hostPlatform;
-        in
-        rec {
-          nixosConfigurations.${buildPlatform}.vpn = {
-            inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
-            modules = alienSystemArgs.ipcacheModules ++ [
-            ];
-          };
+      # Basically, an enum
+      systems.x86_64-linux = "x86_64-linux";
+      systems.aarch64-linux = "aarch64-linux";
+    in
+    rec {
+      packages.x86_64-linux = rec {
+        nixosConfigurations = rec {
+          vpn =
+            let
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
+            in
+            nixpkgs.lib.nixosSystem {
+              system = alienSystemArgs.buildPlatform;
+              inherit (alienSystemArgs) specialArgs;
+              modules = alienSystemArgs.ipcacheModules ++ [
+              ];
+            };
 
-          nixosConfigurations.${buildPlatform}.vm = nixpkgs.lib.nixosSystem {
-            inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
-            modules = alienSystemArgs.ipcacheModules
-              ++ alienSystemArgs.vmModules
-              ++ [
-            ];
-          };
+          vpn-aarch64-linux =
+            let
+              alienSystemArgs = mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux;
+            in
+            alienSystemArgs.pkgs.crossPkgs.aarch64-multiplatform.nixos {
+              inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
+              modules = alienSystemArgs.ipcacheModules ++ [
+              ];
+            };
+
+          vpn-vm =
+            let
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
+            in
+            nixpkgs.lib.nixosSystem {
+              system = alienSystemArgs.buildPlatform;
+              inherit (alienSystemArgs) specialArgs;
+              modules = alienSystemArgs.ipcacheModules
+                ++ alienSystemArgs.vmModules
+                ++ [
+                {
+                  # Ues this system's config as an image
+                  virtualisation.diskImage = "${vpn.config.system.build.images.oci}";
+                }
+              ];
+            };
+
+          vpn-vm-aarch64-linux =
+            let
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux);
+            in
+            alienSystemArgs.pkgs.crossPkgs.aarch64-multiplatform.nixos {
+              inherit (alienSystemArgs) buildPlatform hostPlatform specialArgs;
+              modules = alienSystemArgs.ipcacheModules
+                ++ alienSystemArgs.vmModules
+                ++ [
+              ];
+            };
 
           # ===================================================================
           # 3. Flake outputs for building and running the VM.
           # ===================================================================
-          packages.${buildPlatform}.oci-image =
-            nixosConfigurations.vm.config.system.build.images.oci;
+          #packages.${buildPlatform}."oci-image-${hostPlatform}" =
+          #  nixosConfigurations.vm.config.system.build.images.oci;
 
-          packages.${buildPlatform}.vm-runner =
-            nixosConfigurations.vm.config.system.build.vm;
+        };
+        vm-runner =
+          nixosConfigurations.vpn-vm.config.system.build.vm;
+      };
 
-        }
-
-      );
-
-
-    in
-    { }
+      nixosConfigurations.x86_64-linux = packages.x86_64-linux.nixosConfigurations;
+    };
+}
 

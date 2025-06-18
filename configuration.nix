@@ -101,14 +101,10 @@
   ####################################
   # 'app' user setup
 
-  users.groups.app.name = "app";
-  users.groups.app.gid = 1000;
-
   users.users.app.enable = true;
   users.users.app.uid = 1000;
   users.users.app.name = "app";
   users.users.app.extraGroups = [
-    "app"
     "ipcache"
     "wireguard"
     "vpn"

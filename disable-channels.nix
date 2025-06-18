@@ -5,7 +5,6 @@ inputs@{ nixpkgs
 , ...
 }:
 ({ config
- , inputs
  , ...
  }:
 let
