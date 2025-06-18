@@ -9,6 +9,7 @@
 
 {
   imports = [
+    # oci-common includes qemu-guest
     "${modulesPath}/virtualisation/oci-common.nix"
     "${modulesPath}/profiles/hardened.nix"
   ];
@@ -42,28 +43,11 @@
   ];
 
 
-  environment.persistence."/nix/persist" = {
-    directories = [
-      "/etc/nixos"
-      "/srv"
-      "/var/lib"
-      "/var/log"
-    ];
-
-    files = [
-      "/etc/machine-id"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-    ];
-  };
-
 
   # Only allow executables from /nix/store
   fileSystems."/".options = [ "noexec" ];
   fileSystems."/etc/nixos".options = [ "noexec" ];
-  fileSystems."/srv".options = [ "noexec" ];
+  fileSystems."/home".options = [ "noexec" ];
   fileSystems."/var/log".options = [ "noexec" ];
 
 
@@ -74,32 +58,36 @@
   networking.useNetworkd = true;
   networking.useDHCP = true;
   networking.firewall.enable = true;
-  #networking.usePredictableInterfaceNames = true;
+  networking.usePredictableInterfaceNames = lib.mkForce true;
 
   systemd.network.enable = true;
   systemd.network.wait-online.enable = true;
 
-  systemd.network.networks."50-enp3s0" = {
-    matchConfig.Name = "enp3s0";
+  systemd.network.networks."50-enp0s3" = {
+    matchConfig.Name = "enp0s3";
     networkConfig = {
       DHCP = "yes";
       IPv6AcceptRA = true;
       Description = "paravirtualized network interface";
     };
     dhcpV4Config = {
-      UseDNS = false;
+      UseDNS = true;
     };
     dhcpV6Config = {
-      UseDNS = false;
+      UseDNS = true;
     };
     ipv6AcceptRAConfig = {
-      UseDNS = false;
+      UseDNS = true;
     };
     linkConfig.RequiredForOnline = "routable";
   };
 
   ####################################
   # 'app' user setup
+
+  users.groups."ssh-users".name = "ssh-users";
+  users.groups."ssh-users".gid = 2022;
+  users.groups."ssh-users".members = [ "app" ];
 
   users.users.app.enable = true;
   users.users.app.uid = 1000;

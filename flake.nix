@@ -16,6 +16,10 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     impermanence.url = "github:nix-community/impermanence";
+    impermanence.inputs.nixpkgs.follows = "nixpkgs";
+
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -26,8 +30,9 @@
     , flake-registry
       # Package management
     , determinate
-      # wipe fs each boot
+      # utils
     , impermanence
+    , disko
     , ...
     }:
     let
@@ -70,8 +75,10 @@
               };
             }
             impermanence.nixosModules.impermanence
+            disko.nixosModules.default
             determinate.nixosModules.default
             disableChannels.nixosModules.default
+            ./disko.nix
             ./configuration.nix
           ];
           vmModules = [
@@ -82,15 +89,16 @@
             ({ config, ... }: {
               # Define the QEMU hardware settings. These are used by qemu-vm.nix
               # to generate the correct runner script.
-              virtualisation.cores = 8;
-              virtualisation.memorySize = 16 * 1024; # 16 GB in MB
+              virtualisation.vmVariantWithDisko.virtualisation = {
+                cores = 8;
+                memorySize = 16 * 1024; # 16 GB in MB
+                forwardPorts = [
+                  { host.port = 10022; guest.port = 22; } # Forward host port 10022 to guest port 22 for SSH
+                ];
+                # It's good practice to ensure it uses UEFI boot for aarch64
+                useEFIBoot = true;
+              };
 
-              virtualisation.forwardPorts = [
-                { host.port = 10022; guest.port = 22; } # Forward host port 10022 to guest port 22 for SSH
-              ];
-
-              # It's good practice to ensure it uses UEFI boot for aarch64
-              virtualisation.useEFIBoot = true;
             })
           ];
         };
