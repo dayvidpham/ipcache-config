@@ -17,7 +17,6 @@
   # VM options
 
   oci.efi = true;
-  nixpkgs.hostPlatform = "aarch64-linux";
 
 
   ####################################
