@@ -28,7 +28,7 @@
 
 
   ####################################
-  # Many options inspired by Xe Iaso!
+  # Many options inspired by Xe Iaso
   # https://archive.is/ZzBkF
 
   security.polkit.enable = true;
@@ -74,10 +74,30 @@
   networking.hostName = "vpn";
   networking.useNetworkd = true;
   networking.useDHCP = true;
+  networking.firewall.enable = true;
   #networking.usePredictableInterfaceNames = true;
 
   systemd.network.enable = true;
   systemd.network.wait-online.enable = true;
+
+  systemd.network.networks."50-enp3s0" = {
+    matchConfig.Name = "enp3s0";
+    networkConfig = {
+      DHCP = "yes";
+      IPv6AcceptRA = true;
+      Description = "paravirtualized network interface";
+    };
+    dhcpV4Config = {
+      UseDNS = false;
+    };
+    dhcpV6Config = {
+      UseDNS = false;
+    };
+    ipv6AcceptRAConfig = {
+      UseDNS = false;
+    };
+    linkConfig.RequiredForOnline = "routable";
+  };
 
   ####################################
   # 'app' user setup
