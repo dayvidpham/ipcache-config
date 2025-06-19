@@ -45,10 +45,10 @@
 
 
   # Only allow executables from /nix/store
-  fileSystems."/".options = [ "noexec" ];
-  fileSystems."/etc/nixos".options = [ "noexec" ];
-  fileSystems."/home".options = [ "noexec" ];
-  fileSystems."/var/log".options = [ "noexec" ];
+  #fileSystems."/".options = [ "noexec" ];
+  #fileSystems."/etc/nixos".options = [ "noexec" ];
+  #fileSystems."/home".options = [ "noexec" ];
+  #fileSystems."/var/log".options = [ "noexec" ];
 
 
   ####################################

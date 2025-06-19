@@ -67,19 +67,6 @@
               ;
           };
 
-          ipcacheModules = [
-            {
-              nixpkgs = {
-                inherit buildPlatform hostPlatform;
-              };
-            }
-            #impermanence.nixosModules.impermanence
-            #disko.nixosModules.default
-            determinate.nixosModules.default
-            disableChannels.nixosModules.default
-            #./disko.nix
-            ./configuration.nix
-          ];
           vmModules = [
             # A. The module that enables building a QEMU VM runner script.
             "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
@@ -116,6 +103,21 @@
 
             })
           ];
+
+          ipcacheModules = [
+            {
+              nixpkgs = {
+                inherit buildPlatform hostPlatform;
+              };
+            }
+            #impermanence.nixosModules.impermanence
+            #disko.nixosModules.default
+            determinate.nixosModules.default
+            disableChannels.nixosModules.default
+            ./configuration.nix
+            #./disko.nix
+          ]
+          ++ vmModules;
         };
 
       mkAlienSystem = buildPlatform: hostPlatform: rec {
@@ -160,19 +162,6 @@
               ];
             };
 
-          "vpn-vm-${hostPlatform}" =
-            let
-              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform hostPlatform);
-            in
-            nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.hostPlatform;
-              inherit (alienSystemArgs) specialArgs;
-              modules = builtins.concatLists [
-                alienSystemArgs.ipcacheModules
-                alienSystemArgs.vmModules
-              ];
-            };
-
           # ===================================================================
           # 3. Flake outputs for building and running the VM.
           # ===================================================================
@@ -181,7 +170,7 @@
 
         };
         vm-runner =
-          nixosConfigurations.vpn-vm.config.system.build.vm;
+          nixosConfigurations.vpn.config.system.build.vm;
       };
 
       # Basically, an enum
