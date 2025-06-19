@@ -73,11 +73,11 @@
                 inherit buildPlatform hostPlatform;
               };
             }
-            impermanence.nixosModules.impermanence
-            disko.nixosModules.default
+            #impermanence.nixosModules.impermanence
+            #disko.nixosModules.default
             determinate.nixosModules.default
             disableChannels.nixosModules.default
-            ./disko.nix
+            #./disko.nix
             ./configuration.nix
           ];
           vmModules = [
@@ -85,18 +85,34 @@
             "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
 
             # B. An inline module to specify hardware resources.
-            ({ config, ... }: {
-              # Define the QEMU hardware settings. These are used by qemu-vm.nix
-              # to generate the correct runner script.
-              virtualisation.vmVariantWithDisko.virtualisation = {
-                cores = 8;
+            ({ config, lib, options, ... }: {
+              virtualisation = {
+                cores = 4;
                 memorySize = 16 * 1024; # 16 GB in MB
                 forwardPorts = [
                   { host.port = 10022; guest.port = 22; } # Forward host port 10022 to guest port 22 for SSH
+                  { host.port = 20022; guest.port = 22; } # Forward host port 10022 to guest port 22 for SSH
                 ];
-                # It's good practice to ensure it uses UEFI boot for aarch64
+                #It's good practice to ensure it uses UEFI boot for aarch64
                 useEFIBoot = true;
+
+
+              } // lib.optionalAttrs (options.virtualisation ? vmVariantWithDisko) {
+                vmVariantWithDisko = {
+                  virtualisation = {
+                    cores = 8;
+                    memorySize = 16 * 1024; # 16 GB in MB
+                    forwardPorts = [
+                      { host.port = 10022; guest.port = 22; } # Forward host port 10022 to guest port 22 for SSH
+                    ];
+                    # It's good practice to ensure it uses UEFI boot for aarch64
+                    useEFIBoot = true;
+                  };
+                };
               };
+
+              # Define the QEMU hardware settings. These are used by qemu-vm.nix
+              # to generate the correct runner script.
 
             })
           ];

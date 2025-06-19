@@ -14,7 +14,7 @@
     fsType = "tmpfs";
   };
   fileSystems."/boot" = pkgs.lib.mkForce {
-    device = pkgs.lib.mkForce "/dev/disk/by-partlabel/disk-main-ESP";
+    device = pkgs.lib.mkForce "/dev/disk/by-label/ESP";
   };
 
   disko.devices = {
@@ -49,12 +49,12 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
+                mountOptions = [ "-L=ESP " "umask=0077" ];
               };
             };
             persist = {
-              priority = 3;
-              size = "1G";
+              priority = 4;
+              size = "2G";
               content = {
                 type = "filesystem";
                 format = "ext4";
@@ -63,7 +63,7 @@
               };
             };
             nix = {
-              priority = 4;
+              priority = 3;
               size = "100%";
               content = {
                 type = "filesystem";

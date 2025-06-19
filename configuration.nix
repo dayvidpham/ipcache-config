@@ -141,6 +141,8 @@
   services.openssh.settings.X11Forwarding = false;
   services.openssh.settings.AllowStreamLocalForwarding = false;
   services.openssh.settings.AllowAgentForwarding = false;
+  services.openssh.ports = [ 22 ];
+  services.openssh.openFirewall = true;
 
   services.openssh.authorizedKeysInHomedir = true;
   services.openssh.authorizedKeysFiles = [
