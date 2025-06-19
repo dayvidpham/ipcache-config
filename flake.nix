@@ -102,59 +102,58 @@
           ];
         };
 
-      # Basically, an enum
-      systems.x86_64-linux = "x86_64-linux";
-      systems.aarch64-linux = "aarch64-linux";
-    in
-    rec {
-      packages.x86_64-linux = rec {
+      mkAlienSystem = buildPlatform: hostPlatform: rec {
         nixosConfigurations = rec {
           vpn =
             let
-              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
             nixpkgs.lib.nixosSystem {
               system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
-              modules = alienSystemArgs.ipcacheModules ++ [
+              modules = builtins.concatLists [
+                alienSystemArgs.ipcacheModules
               ];
             };
 
-          vpn-aarch64-linux =
+          #######################################
+          # cross-compilation currently broken
+          # see https://github.com/NixOS/nixpkgs/issues/330308
+          "vpn-${hostPlatform}" =
             let
-              alienSystemArgs = mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux;
+              alienSystemArgs = mkFlakeArgsNixosAlienSystem buildPlatform systems.hostPlatform;
             in
-            nixpkgs.lib.nixosSystem {
+            false && nixpkgs.lib.nixosSystem {
               system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
-              modules = alienSystemArgs.ipcacheModules ++ [
+              modules = builtins.concatLists [
+                alienSystemArgs.ipcacheModules
               ];
             };
 
           vpn-vm =
             let
-              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.x86_64-linux);
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
             nixpkgs.lib.nixosSystem {
               system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
-              modules = alienSystemArgs.ipcacheModules
-                ++ alienSystemArgs.vmModules
-                ++ [
+              modules = builtins.concatLists [
+                alienSystemArgs.ipcacheModules
+                alienSystemArgs.vmModules
               ];
             };
 
-          vpn-vm-aarch64-linux =
+          "vpn-vm-${hostPlatform}" =
             let
-              alienSystemArgs = (mkFlakeArgsNixosAlienSystem systems.x86_64-linux systems.aarch64-linux);
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform hostPlatform);
             in
-            alienSystemArgs.pkgs.pkgsCross.aarch64-multiplatform.nixos {
+            nixpkgs.lib.nixosSystem {
               system = alienSystemArgs.hostPlatform;
               inherit (alienSystemArgs) specialArgs;
-              modules = alienSystemArgs.ipcacheModules
-                ++ alienSystemArgs.vmModules
-                ++ [
-                { }
+              modules = builtins.concatLists [
+                alienSystemArgs.ipcacheModules
+                alienSystemArgs.vmModules
               ];
             };
 
@@ -169,7 +168,16 @@
           nixosConfigurations.vpn-vm.config.system.build.vm;
       };
 
+      # Basically, an enum
+      systems.x86_64-linux = "x86_64-linux";
+      systems.aarch64-linux = "aarch64-linux";
+    in
+    rec {
+      packages.x86_64-linux = with systems; mkAlienSystem x86_64-linux aarch64-linux;
       nixosConfigurations.x86_64-linux = packages.x86_64-linux.nixosConfigurations;
+
+      packages.aarch64-linux = with systems; mkAlienSystem aarch64-linux aarch64-linux;
+      nixosConfigurations.aarch64-linux = packages.aarch64-linux.nixosConfigurations;
     };
 }
 

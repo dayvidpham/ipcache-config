@@ -7,6 +7,7 @@
     enableBinfmt = true;
     pkgs = pkgs.buildPackages;
     kernelPackages = pkgs.buildPackages.linuxPackages_6_12_hardened;
+    imageFormat = "qcow2";
   };
 
   fileSystems."/" = pkgs.lib.mkForce {
@@ -28,9 +29,9 @@
     disk = {
       main = {
         # When using disko-install, we will overwrite this value from the commandline
-        device = "/dev/disk/by-label/nixos";
+        device = "/dev/disk/by-partlabel/disk-main-nixos";
         type = "disk";
-        imageSize = "4G";
+        imageSize = "5G";
         content = {
           type = "gpt";
           partitions = {
