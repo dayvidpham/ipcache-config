@@ -63,8 +63,8 @@
   systemd.network.enable = true;
   systemd.network.wait-online.enable = true;
 
-  systemd.network.networks."50-enp0s3" = {
-    matchConfig.Name = "enp0s3";
+  systemd.network.networks."50-enp0s6" = {
+    matchConfig.Name = "enp0s6";
     networkConfig = {
       DHCP = "yes";
       IPv6AcceptRA = true;
