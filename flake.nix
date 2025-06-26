@@ -116,8 +116,7 @@
             disableChannels.nixosModules.default
             ./configuration.nix
             #./disko.nix
-          ]
-          ++ vmModules;
+          ];
         };
 
       mkAlienSystem = buildPlatform: hostPlatform: rec {
