@@ -15,9 +15,47 @@
   ];
 
   ####################################
+  # Headscale config
+
+  services.headscale = let 
+    domain = "gateway.oraclevcn.com";
+  in {
+    enable = true;
+    address = "[::1]";
+    port = 22443;
+
+    settings = {
+      server_url = "http://vpn.${domain}";
+      dns = {
+        override_local_dns = true;
+      	base_domain = "tailscale.vpn.${domain}";
+	magic_dns = true;
+	#domains = [
+	#  "tailscale.${domain}"
+	#];
+	nameservers.global = [
+	  # AdGuard
+	  "2a10:50c0::ad1:ff"
+	  "94.140.14.14" 
+	  # Quad9
+	  "2620:fe::fe"
+	  "9.9.9.9"
+	];
+	search_domains = [
+	  "vpn.minttea"
+	  "tailscale.${domain}"
+	];
+      };
+    };
+  };
+
+
+  ####################################
   # VM options
 
   oci.efi = true;
+  services.cloud-init.enable = true;
+  services.cloud-init.network.enable = true;
 
 
   ####################################
@@ -45,9 +83,11 @@
 
 
   # Only allow executables from /nix/store
-  #fileSystems."/".options = [ "noexec" ];
+  fileSystems."/".options = [ "noexec" ];
+  fileSystems."/boot".options = [ "noexec" ];
   #fileSystems."/etc/nixos".options = [ "noexec" ];
   #fileSystems."/home".options = [ "noexec" ];
+  #fileSystems."/var/lib".options = [ "noexec" ];
   #fileSystems."/var/log".options = [ "noexec" ];
 
 
