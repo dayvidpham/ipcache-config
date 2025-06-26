@@ -6,7 +6,10 @@
 , modulesPath
 , ...
 }:
-
+let
+  domain = "vpn.gateway.minttea.oraclevcn.com";
+  port = 22443;
+in
 {
   imports = [
     # oci-common includes qemu-guest
@@ -17,37 +20,67 @@
   ####################################
   # Headscale config
 
-  services.headscale = let 
-    domain = "gateway.oraclevcn.com";
-  in {
+  services.headscale = {
     enable = true;
-    address = "[::1]";
-    port = 22443;
+    address = "localhost";
+    inherit port;
 
     settings = {
-      server_url = "http://vpn.${domain}";
+      server_url = "https://${domain}:22443";
       dns = {
         override_local_dns = true;
-      	base_domain = "tailscale.vpn.${domain}";
-	magic_dns = true;
-	#domains = [
-	#  "tailscale.${domain}"
-	#];
-	nameservers.global = [
-	  # AdGuard
-	  "2a10:50c0::ad1:ff"
-	  "94.140.14.14" 
-	  # Quad9
-	  "2620:fe::fe"
-	  "9.9.9.9"
-	];
-	search_domains = [
-	  "vpn.minttea"
-	  "tailscale.${domain}"
-	];
+        base_domain = "tailscale.${domain}";
+        magic_dns = true;
+        #domains = [
+        #  "tailscale.${domain}"
+        #];
+        nameservers.global = [
+          # AdGuard
+          "2a10:50c0::ad1:ff"
+          "94.140.14.14"
+          # Quad9
+          "2620:fe::fe"
+          "9.9.9.9"
+        ];
+        search_domains = [
+          "vpn.minttea"
+          "tailscale.${domain}"
+        ];
       };
     };
   };
+
+  services.caddy = {
+    enable = true;
+    email = "davidpham.tech@gmail.com";
+    globalConfig = ''
+      servers {
+        protocols h3
+        trusted_proxies static private_ranges
+        listener_wrappers {
+          http_redirect
+          tls
+        }
+      }
+    '';
+    virtualHosts = {
+      "${domain}" = {
+        listenAddresses = [
+          "127.0.0.1"
+          "::1"
+        ];
+        serverAliases = [
+          "www.${domain}"
+        ];
+        extraConfig = ''
+          reverse_proxy {
+            to https://localhost:22443 https://[::1]:22443
+          }
+        '';
+      };
+    };
+  };
+
 
 
   ####################################
