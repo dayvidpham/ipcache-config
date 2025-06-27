@@ -127,9 +127,18 @@ in
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
 
+  environment.systemPackages = with pkgs; [
+    neovim
+    git
+    dig
+  ];
+
+  programs.bash.enable = true;
+  programs.bash.enableLsColors = true;
+
 
   ####################################
-  # Many options inspired by Xe Iaso
+  # Security options inspired by Xe Iaso
   # https://archive.is/ZzBkF
 
   security.polkit.enable = true;
