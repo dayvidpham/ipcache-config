@@ -7,8 +7,10 @@
 , ...
 }:
 let
-  domain = "vpn.gateway.minttea.oraclevcn.com";
-  port = 22443;
+  fqdn-base = "vpn.dhpham.com";
+  headscaleDomain = "hs0.${fqdn-base}";
+  tailnetDomain = "tsnet.${fqdn-base}";
+  headscalePort = 8080;
 in
 {
   imports = [
@@ -20,61 +22,89 @@ in
   ####################################
   # Headscale config
 
+  networking.firewall.allowedTCPPorts = [
+    80 # HTTP/1,2
+    443 # HTTPS
+    3478 # STUN
+  ];
+  networking.firewall.allowedUDPPorts = [
+    443 # HTTP/3
+    3478 # STUN
+    41641 # Tailscale/P2P
+  ];
+
+
   services.headscale = {
     enable = true;
     address = "localhost";
-    inherit port;
+    port = headscalePort;
+
 
     settings = {
-      server_url = "https://${domain}:22443";
+      server_url = "https://${headscaleDomain}";
+
+      # Disable TLS, let reverse proxy handle it
+      tls_cert_path = null;
+      tls_key_path = null;
+
       dns = {
         override_local_dns = true;
-        base_domain = "tailscale.${domain}";
+        base_domain = tailnetDomain;
         magic_dns = true;
-        #domains = [
-        #  "tailscale.${domain}"
-        #];
         nameservers.global = [
           # AdGuard
-          "2a10:50c0::ad1:ff"
           "94.140.14.14"
+          "2a10:50c0::ad1:ff"
           # Quad9
-          "2620:fe::fe"
           "9.9.9.9"
+          "2620:fe::fe"
         ];
         search_domains = [
-          "vpn.minttea"
-          "tailscale.${domain}"
+          tailnetDomain
+          "tsnet.vpn.minttea"
         ];
       };
     };
   };
 
+  #security.acme.defaults.email = "davidpham.tech@gmail.com";
+  #security.acme.acceptTerms = true;
+
+  #services.nginx.enable = true;
+  #services.nginx.virtualHosts.${domain} = {
+  #  forceSSL = true;
+  #  #enableACME = true;
+  #  locations."/" = {
+  #    proxyPass =
+  #      "http://localhost:${toString config.services.headscale.port}";
+  #    proxyWebsockets = true;
+  #  };
+  #};
   services.caddy = {
     enable = true;
     email = "davidpham.tech@gmail.com";
-    globalConfig = ''
-      servers {
-        protocols h3
-        trusted_proxies static private_ranges
-        listener_wrappers {
-          http_redirect
-          tls
-        }
-      }
-    '';
+    #globalConfig = ''
+    #  debug
+    #  servers {
+    #    trusted_proxies static private_ranges
+    #    listener_wrappers {
+    #      http_redirect
+    #      tls
+    #    }
+    #  }
+    #'';
     virtualHosts = {
-      "${domain}" = {
-        listenAddresses = [
-          "127.0.0.1"
-          "::1"
-        ];
+      "${headscaleDomain}" = {
+        #listenAddresses = [
+        #  "127.0.0.1"
+        #  "::1"
+        #];
         serverAliases = [
-          "www.${domain}"
+          "www.${headscaleDomain}"
         ];
         extraConfig = ''
           reverse_proxy {
-            to https://localhost:22443 https://[::1]:22443
+            to localhost:8080 0.0.0.0:8080 [::1]:8080
           }
         '';
       };
@@ -127,7 +157,7 @@ in
   ####################################
   # systemd-networkd setup
 
-  networking.hostName = "vpn";
+  networking.hostName = "hs0";
   networking.useNetworkd = true;
   networking.useDHCP = true;
   networking.firewall.enable = true;
@@ -168,7 +198,7 @@ in
   users.users.app.extraGroups = [
     "ipcache"
     "wireguard"
-    "vpn"
+    "hs0"
     # ^-- some extra groups that might be useful
     "ssh-users" # only ssh-users can be ssh'd into
     "wheel"
