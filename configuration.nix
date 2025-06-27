@@ -23,13 +23,14 @@ in
   # Headscale config
 
   networking.firewall.allowedTCPPorts = [
-    80 # HTTP/1,2
+    80 # HTTP/1,2,3
     443 # HTTPS
     3478 # STUN
     config.services.tailscale.port
   ];
   networking.firewall.allowedUDPPorts = [
-    443 # HTTP/3
+    80 # HTTP/3
+    443 # HTTPS
     3478 # STUN
     41641 # Tailscale/P2P
     config.services.tailscale.port
@@ -46,7 +47,9 @@ in
     settings = {
       server_url = "https://${headscaleDomain}";
 
-      # Disable TLS, let reverse proxy handle it
+      # Use TLS certs from reverse proxy, should be accessible?
+      #tls_cert_path = "/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${headscaleDomain}/${headscaleDomain}.crt";
+      #tls_key_path = "/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${headscaleDomain}/${headscaleDomain}.key";
       tls_cert_path = null;
       tls_key_path = null;
 
@@ -63,7 +66,6 @@ in
           "2620:fe::fe"
         ];
         search_domains = [
-          tailnetDomain
           "tsnet.vpn.minttea"
         ];
       };
@@ -76,6 +78,7 @@ in
     #globalConfig = ''
     #  debug
     #  servers {
+    #    protocols h3 h2
     #    trusted_proxies static private_ranges
     #    listener_wrappers {
     #      http_redirect
@@ -85,10 +88,6 @@ in
     #'';
     virtualHosts = {
       "${headscaleDomain}" = {
-        #listenAddresses = [
-        #  "127.0.0.1"
-        #  "::1"
-        #];
         serverAliases = [
           "www.${headscaleDomain}"
         ];
