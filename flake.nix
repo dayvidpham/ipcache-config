@@ -121,7 +121,7 @@
 
       mkAlienSystem = buildPlatform: hostPlatform: rec {
         nixosConfigurations = rec {
-          vpn =
+          hs0 =
             let
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
@@ -136,7 +136,7 @@
           #######################################
           # cross-compilation currently broken
           # see https://github.com/NixOS/nixpkgs/issues/330308
-          "vpn-${hostPlatform}" =
+          "hs0-${hostPlatform}" =
             let
               alienSystemArgs = mkFlakeArgsNixosAlienSystem buildPlatform systems.hostPlatform;
             in
@@ -148,18 +148,7 @@
               ];
             };
 
-          vpn-vm =
-            let
-              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
-            in
-            nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.hostPlatform;
-              inherit (alienSystemArgs) specialArgs;
-              modules = builtins.concatLists [
-                alienSystemArgs.ipcacheModules
-                alienSystemArgs.vmModules
-              ];
-            };
+          hs0-vm = hs0.config.system.build.vm;
 
           # ===================================================================
           # 3. Flake outputs for building and running the VM.
@@ -168,8 +157,9 @@
           #  nixosConfigurations.vm.config.system.build.images.oci;
 
         };
-        vm-runner =
-          nixosConfigurations.vpn.config.system.build.vm;
+
+        oci-image = nixosConfigurations.hs0.config.system.build.images.oci;
+        vm-runner = nixosConfigurations.hs0.config.system.build.vm;
       };
 
       # Basically, an enum
