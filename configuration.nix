@@ -146,8 +146,8 @@ in
 
 
   # Only allow executables from /nix/store
-  fileSystems."/".options = [ "noexec" ];
-  fileSystems."/boot".options = [ "noexec" ];
+  #fileSystems."/".options = [ "noexec" ];
+  #fileSystems."/boot".options = [ "noexec" ];
   #fileSystems."/etc/nixos".options = [ "noexec" ];
   #fileSystems."/home".options = [ "noexec" ];
   #fileSystems."/var/lib".options = [ "noexec" ];
