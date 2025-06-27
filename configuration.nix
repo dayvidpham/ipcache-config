@@ -34,6 +34,7 @@ in
     41641 # Tailscale/P2P
     config.services.tailscale.port
   ];
+  networking.nat.enable = true; # for tailscale health checks
 
 
   services.headscale = {
@@ -132,7 +133,6 @@ in
     dig
   ];
 
-  programs.bash.enable = true;
   programs.bash.enableLsColors = true;
 
 
