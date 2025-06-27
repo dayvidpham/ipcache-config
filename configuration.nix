@@ -26,11 +26,13 @@ in
     80 # HTTP/1,2
     443 # HTTPS
     3478 # STUN
+    config.services.tailscale.port
   ];
   networking.firewall.allowedUDPPorts = [
     443 # HTTP/3
     3478 # STUN
     41641 # Tailscale/P2P
+    config.services.tailscale.port
   ];
 
 
@@ -67,19 +69,6 @@ in
     };
   };
 
-  #security.acme.defaults.email = "davidpham.tech@gmail.com";
-  #security.acme.acceptTerms = true;
-
-  #services.nginx.enable = true;
-  #services.nginx.virtualHosts.${domain} = {
-  #  forceSSL = true;
-  #  #enableACME = true;
-  #  locations."/" = {
-  #    proxyPass =
-  #      "http://localhost:${toString config.services.headscale.port}";
-  #    proxyWebsockets = true;
-  #  };
-  #};
   services.caddy = {
     enable = true;
     email = "davidpham.tech@gmail.com";
@@ -109,6 +98,16 @@ in
         '';
       };
     };
+  };
+
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+    authKeyParameters.baseUrl = "https://hs0.vpn.dhpham.com";
+  };
+  networking.firewall = {
+    checkReversePath = "loose";
+    trustedInterfaces = [ "tailscale0" ];
   };
 
 
