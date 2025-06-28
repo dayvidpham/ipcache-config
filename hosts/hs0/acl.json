@@ -72,7 +72,7 @@
             , "proto": "tcp"
             , "src": [ "group:admin" ]
             , "dst": [
-                "tag:border:22"
+                "tag:border"
                 , "group:border:22"
                 , "minttea:22"
             ]
