@@ -29,6 +29,7 @@ in
   networking.firewall.allowedUDPPorts = [
     80 # HTTP/3
     443 # HTTPS
+    3478 # STUN/DERP
   ];
   networking.nat.enable = true; # for tailscale health checks
 
