@@ -20,6 +20,12 @@
     },
     // tag: specifies the class or role of a machine
     // tagOwners are groups that can attempt to opt their own machines into having the role
+    "tagOwners": {
+        "tag:exit": [
+            "group:exit",
+            "exit"
+        ],
+    },
     "acls": [
         // We still have to allow internal users communications since nothing guarantees that each user have
         // their own users.
@@ -54,7 +60,7 @@
             // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
             "action": "accept",
             "src": [
-                "*"
+                "autogroup:members"
             ],
             "dst": [
                 "autogroup:internet:*"
@@ -78,6 +84,7 @@
             ],
             "dst": [
                 "group:border:22",
+                "tag:exit:22",
                 "minttea:22"
             ]
         }
@@ -90,7 +97,7 @@
             ],
             "dst": [
                 "hs0",
-                "exit",
+                "tag:exit",
                 "minttea"
             ],
             "users": [
@@ -105,7 +112,7 @@
             ],
             "dst": [
                 "hs0",
-                "exit",
+                "tag:exit",
                 "minttea"
             ],
             "users": [
