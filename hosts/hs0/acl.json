@@ -77,20 +77,21 @@
                 "group:admin"
             ],
             "dst": [
-                "group:border",
+                "group:border:22",
                 "minttea:22"
             ]
         }
     ],
     "ssh": [
         {
-            "action": "action",
+            "action": "accept",
             "src": [
                 "group:admin"
             ],
             "dst": [
-                "group:border",
-                "minttea:22"
+                "hs0",
+                "exit",
+                "minttea"
             ],
             "users": [
                 "autogroup:nonroot",
@@ -103,8 +104,9 @@
                 "group:admin"
             ],
             "dst": [
-                "group:border",
-                "minttea:22"
+                "hs0",
+                "exit",
+                "minttea"
             ],
             "users": [
                 "autogroup:nonroot",
