@@ -1,0 +1,113 @@
+{
+    "groups": {
+        "group:helm": [
+            "hs0@"
+        ],
+        "group:exit": [
+            "exit@"
+        ],
+        "group:border": [
+            "hs0@"
+            , "exit@"
+        ],
+
+        "group:internal": [
+            "internal@"
+        ],
+
+        "group:admin": [
+            "hs0@"
+            , "minttea@"
+        ],
+
+        "group:leaf": [
+            "minttea@"
+        ],
+    },
+    // tag: specifies the class or role of a machine
+    // tagOwners are groups that can attempt to opt their own machines into having the role
+    "tagOwners": {
+        "tag:helm": [
+            // e.g. only the helm group can define a helm machine
+            "group:helm"
+        ],
+        "tag:exit": [
+            "group:exit"
+        ],
+        "tag:border": [
+            "group:border"
+        ],
+
+        "tag:internal": [
+            "group:admin"
+        ],
+
+        "tag:leaf": [
+            "group:leaf"
+        ],
+    },
+    "acls": [
+        // We still have to allow internal users communications since nothing guarantees that each user have
+        // their own users.
+        { "action": "accept", "src": ["hs0@"], "dst": ["hs0@:*"] }
+        , { "action": "accept", "src": ["exit@"], "dst": ["exit@:*"] }
+        , { "action": "accept", "src": ["minttea@"], "dst": ["minttea@:*"] }
+
+        , { // allow pretty much everybody to contact the exit nodes
+            // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
+            "action": "accept"
+            , "src": [ "*" ]
+            , "dst": ["autogroup:internet:*"]
+        }
+
+        , { // allow admins to ping everybody
+            "action": "accept"
+            , "proto": "icmp"
+            , "src": [ "group:admin" ]
+            , "dst": ["*@:*"]
+        }
+
+        , { // allow admins to ssh into others
+            "action": "accept"
+            , "proto": "tcp"
+            , "src": [ "group:admin" ]
+            , "dst": [
+                "tag:border:22"
+                , "group:border:22"
+                , "minttea@:22"
+            ]
+        }
+    ],
+    "ssh": [
+        {
+            "action": "action"
+            , "src": [
+                "group:admin"
+            ]
+            , "dst": [
+                "tag:border:22"
+                , "group:border:22"
+                , "minttea@:22"
+            ]
+            , "users": [
+                "autogroup:nonroot"
+                , "root"
+            ]
+        }
+        , {
+            "action": "check"
+            , "src": [
+                "group:admin"
+            ],
+            , "dst": [
+                "tag:border:22"
+                , "group:border:22"
+                , "minttea@:22"
+            ]
+            , "users": [
+                "autogroup:nonroot"
+                , "root"
+            ]
+        }
+    ],
+}

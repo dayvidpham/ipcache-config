@@ -25,15 +25,10 @@ in
   networking.firewall.allowedTCPPorts = [
     80 # HTTP/1,2,3
     443 # HTTPS
-    3478 # STUN
-    config.services.tailscale.port
   ];
   networking.firewall.allowedUDPPorts = [
     80 # HTTP/3
     443 # HTTPS
-    3478 # STUN
-    41641 # Tailscale/P2P
-    config.services.tailscale.port
   ];
   networking.nat.enable = true; # for tailscale health checks
 
@@ -52,6 +47,9 @@ in
       #tls_key_path = "/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${headscaleDomain}/${headscaleDomain}.key";
       tls_cert_path = null;
       tls_key_path = null;
+
+      policy.mode = "file";
+      policy.path = ./acl.json;
 
       dns = {
         override_local_dns = true;
