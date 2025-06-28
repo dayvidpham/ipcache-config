@@ -131,33 +131,15 @@
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
             with alienSystemArgs;
-            nixpkgs.lib.nixosSystem {
+            (nixpkgs.lib.nixosSystem {
               system = hostPlatform;
               inherit specialArgs;
               modules = builtins.concatLists [
                 baseHostModules
                 hs0Modules
               ];
-            };
+            });
 
-          #######################################
-          # cross-compilation currently broken
-          # see https://github.com/NixOS/nixpkgs/issues/330308
-          "hs0-${hostPlatform}" =
-            let
-              alienSystemArgs = mkFlakeArgsNixosAlienSystem buildPlatform systems.hostPlatform;
-            in
-            with alienSystemArgs;
-            false && nixpkgs.lib.nixosSystem {
-              system = hostPlatform;
-              inherit specialArgs;
-              modules = builtins.concatLists [
-                baseHostModules
-                hs0Modules
-              ];
-            };
-
-          hs0-vm = hs0.config.system.build.vm;
 
           # ===================================================================
           # 3. Flake outputs for building and running the VM.
@@ -170,14 +152,14 @@
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
             with alienSystemArgs;
-            nixpkgs.lib.nixosSystem {
+            (nixpkgs.lib.nixosSystem {
               system = hostPlatform;
               inherit specialArgs;
               modules = builtins.concatLists [
                 baseHostModules
                 portalModules
               ];
-            };
+            });
         };
 
         oci-image = nixosConfigurations.hs0.config.system.build.images.oci;

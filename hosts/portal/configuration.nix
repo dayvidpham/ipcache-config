@@ -81,16 +81,6 @@ in
   ];
 
 
-
-  # Only allow executables from /nix/store
-  #fileSystems."/".options = [ "noexec" ];
-  #fileSystems."/boot".options = [ "noexec" ];
-  #fileSystems."/etc/nixos".options = [ "noexec" ];
-  #fileSystems."/home".options = [ "noexec" ];
-  #fileSystems."/var/lib".options = [ "noexec" ];
-  #fileSystems."/var/log".options = [ "noexec" ];
-
-
   ####################################
   # systemd-networkd setup
 
@@ -133,9 +123,9 @@ in
   users.users.app.uid = 1000;
   users.users.app.name = "app";
   users.users.app.extraGroups = [
-    "ipcache"
-    "wireguard"
-    "hs0"
+    "app"
+    "portal"
+    "tailscale"
     # ^-- some extra groups that might be useful
     "ssh-users" # only ssh-users can be ssh'd into
     "wheel"
