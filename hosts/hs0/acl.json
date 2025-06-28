@@ -60,7 +60,7 @@
             // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
             "action": "accept",
             "src": [
-                "autogroup:member"
+                "*@"
             ],
             "dst": [
                 "autogroup:internet:*"
@@ -73,7 +73,7 @@
                 "group:admin"
             ],
             "dst": [
-                "*:*"
+                "*@:*"
             ]
         },
         { // allow admins to ssh into others
