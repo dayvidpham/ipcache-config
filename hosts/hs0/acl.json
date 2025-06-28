@@ -111,7 +111,8 @@
             "users": [
                 "autogroup:nonroot",
                 "root"
-            ]
+            ],
+            "checkPeriod": "24h",
         }
     ],
 }
