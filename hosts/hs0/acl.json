@@ -101,6 +101,20 @@
                 "tag:exit:22",
                 "minttea@:22"
             ]
+        },
+        { // allow admins to ssh into others
+            "action": "accept",
+            "src": [
+                "minttea@"
+            ],
+            "dst": [
+                "group:border:22",
+                "tag:exit:22",
+                "hs0@:22",
+                "exit@:22",
+                "minttea@:22",
+                "minttea@:8108"
+            ]
         }
     ],
     "ssh": [
@@ -119,21 +133,23 @@
                 "root"
             ]
         },
-        //{
-        //    "action": "check",
-        //    "src": [
-        //        "group:admin"
-        //    ],
-        //    "dst": [
-        //        "hs0@",
-        //        "tag:exit",
-        //        "minttea@"
-        //    ],
-        //    "users": [
-        //        "autogroup:nonroot",
-        //        "root"
-        //    ],
-        //    "checkPeriod": "24h",
-        //}
+        {
+            "action": "accept",
+            "src": [
+                "minttea@"
+            ],
+            "dst": [
+                "hs0@",
+                "tag:exit",
+                "exit@",
+                "minttea@"
+            ],
+            "users": [
+                "autogroup:nonroot",
+		"app",
+		"minttea",
+                "root"
+            ]
+        },
     ],
 }
