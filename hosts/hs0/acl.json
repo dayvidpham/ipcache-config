@@ -98,7 +98,7 @@
             "action": "check"
             , "src": [
                 "group:admin"
-            ],
+            ]
             , "dst": [
                 "tag:border:22"
                 , "group:border:22"
