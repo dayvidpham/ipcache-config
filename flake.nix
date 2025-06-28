@@ -104,7 +104,7 @@
             })
           ];
 
-          ipcacheModules = [
+          baseHostModules = [
             {
               nixpkgs = {
                 inherit buildPlatform hostPlatform;
@@ -114,8 +114,13 @@
             #disko.nixosModules.default
             determinate.nixosModules.default
             disableChannels.nixosModules.default
-            ./configuration.nix
             #./disko.nix
+          ];
+          hs0Modules = [
+            ./hosts/hs0/configuration.nix
+          ];
+          portalModules = [
+            ./hosts/portal/configuration.nix
           ];
         };
 
@@ -125,11 +130,13 @@
             let
               alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
             in
+            with alienSystemArgs;
             nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.hostPlatform;
-              inherit (alienSystemArgs) specialArgs;
+              system = hostPlatform;
+              inherit specialArgs;
               modules = builtins.concatLists [
-                alienSystemArgs.ipcacheModules
+                baseHostModules
+                hs0Modules
               ];
             };
 
@@ -140,11 +147,13 @@
             let
               alienSystemArgs = mkFlakeArgsNixosAlienSystem buildPlatform systems.hostPlatform;
             in
+            with alienSystemArgs;
             false && nixpkgs.lib.nixosSystem {
-              system = alienSystemArgs.hostPlatform;
-              inherit (alienSystemArgs) specialArgs;
+              system = hostPlatform;
+              inherit specialArgs;
               modules = builtins.concatLists [
-                alienSystemArgs.ipcacheModules
+                baseHostModules
+                hs0Modules
               ];
             };
 
@@ -156,6 +165,19 @@
           #packages.${buildPlatform}."oci-image-${hostPlatform}" =
           #  nixosConfigurations.vm.config.system.build.images.oci;
 
+          portal =
+            let
+              alienSystemArgs = (mkFlakeArgsNixosAlienSystem buildPlatform buildPlatform);
+            in
+            with alienSystemArgs;
+            nixpkgs.lib.nixosSystem {
+              system = hostPlatform;
+              inherit specialArgs;
+              modules = builtins.concatLists [
+                baseHostModules
+                portalModules
+              ];
+            };
         };
 
         oci-image = nixosConfigurations.hs0.config.system.build.images.oci;
