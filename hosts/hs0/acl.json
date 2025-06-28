@@ -34,9 +34,6 @@
         "tag:exit": [
             "group:exit"
         ],
-        "tag:border": [
-            "group:border"
-        ],
 
         "tag:internal": [
             "group:admin"
@@ -72,7 +69,6 @@
             , "proto": "tcp"
             , "src": [ "group:admin" ]
             , "dst": [
-                "tag:border"
                 , "group:border:22"
                 , "minttea:22"
             ]
@@ -85,7 +81,6 @@
                 "group:admin"
             ]
             , "dst": [
-                "tag:border:22"
                 , "group:border:22"
                 , "minttea:22"
             ]
@@ -100,7 +95,6 @@
                 "group:admin"
             ]
             , "dst": [
-                "tag:border:22"
                 , "group:border:22"
                 , "minttea:22"
             ]
