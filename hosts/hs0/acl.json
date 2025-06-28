@@ -1,21 +1,21 @@
 {
     "groups": {
         "group:helm": [
-            "hs0"
+            "hs0@"
         ],
         "group:exit": [
-            "exit"
+            "exit@"
         ],
         "group:border": [
-            "hs0",
-            "exit"
+            "hs0@",
+            "exit@"
         ],
         "group:admin": [
-            "hs0",
-            "minttea"
+            "hs0@",
+            "minttea@"
         ],
         "group:leaf": [
-            "minttea"
+            "minttea@"
         ]
     },
     // tag: specifies the class or role of a machine
@@ -23,7 +23,7 @@
     "tagOwners": {
         "tag:exit": [
             "group:exit",
-            "exit"
+            "exit@"
         ],
     },
     "acls": [
@@ -32,28 +32,28 @@
         {
             "action": "accept",
             "src": [
-                "hs0"
+                "hs0@"
             ],
             "dst": [
-                "hs0:*"
+                "hs0@:*"
             ]
         },
         {
             "action": "accept",
             "src": [
-                "exit"
+                "exit@"
             ],
             "dst": [
-                "exit:*"
+                "exit@:*"
             ]
         },
         {
             "action": "accept",
             "src": [
-                "minttea"
+                "minttea@"
             ],
             "dst": [
-                "minttea:*"
+                "minttea@:*"
             ]
         },
         { // allow pretty much everybody to contact the exit nodes
@@ -85,7 +85,7 @@
             "dst": [
                 "group:border:22",
                 "tag:exit:22",
-                "minttea:22"
+                "minttea@:22"
             ]
         }
     ],
@@ -96,9 +96,9 @@
                 "group:admin"
             ],
             "dst": [
-                "hs0",
+                "hs0@",
                 "tag:exit",
-                "minttea"
+                "minttea@"
             ],
             "users": [
                 "autogroup:nonroot",
@@ -111,9 +111,9 @@
                 "group:admin"
             ],
             "dst": [
-                "hs0",
+                "hs0@",
                 "tag:exit",
-                "minttea"
+                "minttea@"
             ],
             "users": [
                 "autogroup:nonroot",
