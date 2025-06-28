@@ -25,11 +25,12 @@ in
   networking.firewall.allowedTCPPorts = [
     80 # HTTP/1,2,3
     443 # HTTPS
+    3478 # DERP
   ];
   networking.firewall.allowedUDPPorts = [
     80 # HTTP/3
     443 # HTTPS
-    3478 # STUN/DERP
+    3478 # STUN
   ];
   networking.nat.enable = true; # for tailscale health checks
 
