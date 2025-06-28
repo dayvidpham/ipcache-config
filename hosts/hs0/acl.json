@@ -60,7 +60,7 @@
             // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
             "action": "accept",
             "src": [
-                "*@"
+                "*"
             ],
             "dst": [
                 "autogroup:internet:*"
@@ -70,7 +70,17 @@
             // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
             "action": "accept",
             "src": [
-                "*@"
+                "*"
+            ],
+            "dst": [
+                "tag:exit:*"
+            ]
+        },
+        { // allow pretty much everybody to contact the exit nodes
+            // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
+            "action": "accept",
+            "src": [
+                "*"
             ],
             "dst": [
                 "tag:exit:*"
