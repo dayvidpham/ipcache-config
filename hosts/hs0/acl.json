@@ -26,6 +26,11 @@
             "exit@"
         ],
     },
+    "autoApprovers": {
+        "exitNode": [
+            "tag:exit"
+        ]
+    },
     "acls": [
         // We still have to allow internal users communications since nothing guarantees that each user have
         // their own users.
@@ -64,16 +69,6 @@
             ],
             "dst": [
                 "autogroup:internet:*"
-            ]
-        },
-        { // allow pretty much everybody to contact the exit nodes
-            // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
-            "action": "accept",
-            "src": [
-                "*"
-            ],
-            "dst": [
-                "tag:exit:*"
             ]
         },
         { // allow pretty much everybody to contact the exit nodes
