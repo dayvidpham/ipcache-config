@@ -125,6 +125,8 @@ in
 
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
+  # explicitly load iptables kernel module for headscale healthcheck
+  boot.kernelModules = [ "xt_mark" ];
 
   environment.systemPackages = with pkgs; [
     neovim
@@ -149,16 +151,6 @@ in
   security.audit.rules = [
     "-a exit,always -F arch=b64 -S execve"
   ];
-
-
-
-  # Only allow executables from /nix/store
-  #fileSystems."/".options = [ "noexec" ];
-  #fileSystems."/boot".options = [ "noexec" ];
-  #fileSystems."/etc/nixos".options = [ "noexec" ];
-  #fileSystems."/home".options = [ "noexec" ];
-  #fileSystems."/var/lib".options = [ "noexec" ];
-  #fileSystems."/var/log".options = [ "noexec" ];
 
 
   ####################################

@@ -55,6 +55,8 @@ in
 
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
+  # explicitly load iptables kernel module for headscale healthcheck
+  boot.kernelModules = [ "xt_mark" ];
 
   environment.systemPackages = with pkgs; [
     neovim
