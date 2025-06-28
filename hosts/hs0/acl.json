@@ -69,7 +69,7 @@
             , "proto": "tcp"
             , "src": [ "group:admin" ]
             , "dst": [
-                , "group:border:22"
+                "group:border:22"
                 , "minttea:22"
             ]
         }
@@ -81,7 +81,7 @@
                 "group:admin"
             ]
             , "dst": [
-                , "group:border:22"
+                "group:border:22"
                 , "minttea:22"
             ]
             , "users": [
@@ -95,7 +95,7 @@
                 "group:admin"
             ]
             , "dst": [
-                , "group:border:22"
+                "group:border:22"
                 , "minttea:22"
             ]
             , "users": [
