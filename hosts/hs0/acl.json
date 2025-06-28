@@ -93,7 +93,6 @@
         },
         { // allow admins to ssh into others
             "action": "accept",
-            "proto": "tcp",
             "src": [
                 "group:admin"
             ],
@@ -120,21 +119,21 @@
                 "root"
             ]
         },
-        {
-            "action": "check",
-            "src": [
-                "group:admin"
-            ],
-            "dst": [
-                "hs0@",
-                "tag:exit",
-                "minttea@"
-            ],
-            "users": [
-                "autogroup:nonroot",
-                "root"
-            ],
-            "checkPeriod": "24h",
-        }
+        //{
+        //    "action": "check",
+        //    "src": [
+        //        "group:admin"
+        //    ],
+        //    "dst": [
+        //        "hs0@",
+        //        "tag:exit",
+        //        "minttea@"
+        //    ],
+        //    "users": [
+        //        "autogroup:nonroot",
+        //        "root"
+        //    ],
+        //    "checkPeriod": "24h",
+        //}
     ],
 }
