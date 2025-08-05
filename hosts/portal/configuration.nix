@@ -197,9 +197,7 @@ in
   ############################
   # Nix binary cache options
   
-  nix.settings.builders = mkBefore [
-    "@/etc/nix/machines"
-  ];
+  nix.distributedBuilds = true;
   nix.settings.substituters = mkBefore [
     "ssh-ng://nix-ssh@desktop.tsnet.vpn.dhpham.com?priority=1"
   ];
