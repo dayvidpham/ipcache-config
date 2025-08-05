@@ -7,6 +7,11 @@
 , ...
 }:
 let
+  inherit (lib)
+    mkBefore
+    mkDefault
+    ;
+
   fqdn-base = "vpn.dhpham.com";
   headscaleDomain = "hs0.${fqdn-base}";
   tailnetDomain = "tsnet.${fqdn-base}";
