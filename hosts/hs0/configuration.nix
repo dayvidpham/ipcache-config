@@ -289,7 +289,7 @@ in
     # are taken from your "~/.ssh/config" file.
     hostName = "desktop.tsnet.vpn.dhpham.com";
     # CPU architecture of the builder, and the operating system it runs.
-    system = "x86_64-linux";
+    systems = [ "aarch64-linux" "x86_64-linux" ];
     # ssh-ng is a Nix custom ssh-variant that avoids lots of "trusted-users" settings pain
     protocol = "ssh-ng";
 
