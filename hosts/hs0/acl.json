@@ -99,7 +99,8 @@
             "dst": [
                 "group:border:22",
                 "tag:exit:22",
-                "minttea@:22"
+                "minttea@:22",
+                "minttea@:8108"
             ]
         },
         { // allow admins to ssh into others
@@ -130,7 +131,8 @@
             ],
             "users": [
                 "autogroup:nonroot",
-                "root"
+                "app",
+                "nix-ssh"
             ]
         },
         {
@@ -148,7 +150,7 @@
                 "autogroup:nonroot",
 		"app",
 		"minttea",
-                "root"
+                "nix-ssh"
             ]
         },
     ],
