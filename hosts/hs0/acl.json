@@ -110,6 +110,7 @@
                 "hs0@:22",
                 "minttea@:22",
                 "minttea@:8108",
+                "sfurs@:22",
                 "sfurs@:9204",
             ]
         },
@@ -125,6 +126,7 @@
                 "exit@:22",
                 "minttea@:22",
                 "minttea@:8108",
+                "sfurs@:22",
                 "sfurs@:9204",
             ]
         }
@@ -158,13 +160,16 @@
                 "hs0@",
                 "tag:exit",
                 "exit@",
+                "sfurs@",
+                "tag:builder",
                 "minttea@"
             ],
             "users": [
                 "autogroup:nonroot",
 		"app",
 		"minttea",
-                "nix-ssh"
+                "nix-ssh",
+                "builder",
             ]
         },
     ],
