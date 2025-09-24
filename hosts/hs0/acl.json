@@ -24,6 +24,9 @@
             "group:exit",
             "exit@"
         ],
+        "tag:builder": [
+            "sfurs@",
+        ],
     },
     "autoApprovers": {
         "exitNode": [
