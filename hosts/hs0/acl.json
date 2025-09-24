@@ -57,7 +57,8 @@
                 "minttea@"
             ],
             "dst": [
-                "minttea@:*"
+                "minttea@:*",
+                "sfurs@:*"
             ]
         },
         {
