@@ -11,7 +11,6 @@
             "exit@"
         ],
         "group:admin": [
-            "hs0@",
             "minttea@"
         ],
         "group:leaf": [
@@ -61,6 +60,15 @@
                 "minttea@:*"
             ]
         },
+        {
+            "action": "accept",
+            "src": [
+                "sfurs@"
+            ],
+            "dst": [
+                "sfurs@:*"
+            ]
+        },
         { // allow pretty much everybody to contact the exit nodes
             // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
             "action": "accept",
@@ -99,8 +107,10 @@
             "dst": [
                 "group:border:22",
                 "tag:exit:22",
+                "hs0@:22",
                 "minttea@:22",
-                "minttea@:8108"
+                "minttea@:8108",
+                "sfurs@:9204",
             ]
         },
         { // allow admins to ssh into others
@@ -114,7 +124,8 @@
                 "hs0@:22",
                 "exit@:22",
                 "minttea@:22",
-                "minttea@:8108"
+                "minttea@:8108",
+                "sfurs@:9204",
             ]
         }
     ],
@@ -127,12 +138,15 @@
             "dst": [
                 "hs0@",
                 "tag:exit",
-                "minttea@"
+                "minttea@",
+                "sfurs@",
+                "tag:builder",
             ],
             "users": [
                 "autogroup:nonroot",
                 "app",
-                "nix-ssh"
+                "nix-ssh",
+                "builder",
             ]
         },
         {
