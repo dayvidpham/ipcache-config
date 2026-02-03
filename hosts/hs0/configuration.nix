@@ -266,7 +266,13 @@ in
 
   ############################
   # Nix binary cache options
-  
+
+  programs.ssh.matchBlocks."desktop.tsnet.vpn.dhpham.com" = {
+    port = 8108;
+    user = "nix-ssh";
+    identityFile = "/root/.ssh/id_ed25519";
+  };
+
   nix.distributedBuilds = true;
   nix.settings.substituters = mkBefore [
     "ssh-ng://nix-ssh@desktop.tsnet.vpn.dhpham.com?priority=1"
@@ -284,24 +290,24 @@ in
 
   nix.buildMachines = [
     {
-    # Will be used to call "ssh builder" to connect to the builder machine.
-    # The details of the connection (user, port, url etc.)
-    # are taken from your "~/.ssh/config" file.
-    hostName = "desktop.tsnet.vpn.dhpham.com";
-    # CPU architecture of the builder, and the operating system it runs.
-    systems = [ "aarch64-linux" "x86_64-linux" ];
-    # ssh-ng is a Nix custom ssh-variant that avoids lots of "trusted-users" settings pain
-    protocol = "ssh-ng";
+      # Will be used to call "ssh builder" to connect to the builder machine.
+      # The details of the connection (user, port, url etc.)
+      # are taken from your "~/.ssh/config" file.
+      hostName = "desktop.tsnet.vpn.dhpham.com";
+      # CPU architecture of the builder, and the operating system it runs.
+      systems = [ "aarch64-linux" "x86_64-linux" ];
+      # ssh-ng is a Nix custom ssh-variant that avoids lots of "trusted-users" settings pain
+      protocol = "ssh-ng";
 
-    sshUser = "nix-ssh";
-    publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSU8xZDIrbGhDemRocnhhTDhxckE1VVc5V0N6SUN5VXBWbHQrZXJCWkZkazEgcm9vdEBkZXNrdG9wCg==";
+      sshUser = "nix-ssh";
+      publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSU8xZDIrbGhDemRocnhhTDhxckE1VVc5V0N6SUN5VXBWbHQrZXJCWkZkazEgcm9vdEBkZXNrdG9wCg==";
 
-    # default is 1 but may keep the builder idle in between builds
-    maxJobs = 16;
-    # how fast is the builder compared to your local machine
-    speedFactor = 8;
-    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ]
-      ++ [ "nix-command" "flakes" "fetch-closure" ]
+      # default is 1 but may keep the builder idle in between builds
+      maxJobs = 16;
+      # how fast is the builder compared to your local machine
+      speedFactor = 8;
+      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ]
+        ++ [ "nix-command" "flakes" "fetch-closure" ]
       ;
     }
   ];
