@@ -267,11 +267,13 @@ in
   ############################
   # Nix binary cache options
 
-  programs.ssh.matchBlocks."desktop.tsnet.vpn.dhpham.com" = {
-    port = 8108;
-    user = "nix-ssh";
-    identityFile = "/root/.ssh/id_ed25519";
-  };
+  environment.etc."ssh/ssh_config.d/nix-builders.conf".text = ''
+    Host desktop.tsnet.vpn.dhpham.com
+      Port 8108
+      User nix-ssh
+      IdentityFile /root/.ssh/id_ed25519
+  '';
+
 
   nix.distributedBuilds = true;
   nix.settings.substituters = mkBefore [
