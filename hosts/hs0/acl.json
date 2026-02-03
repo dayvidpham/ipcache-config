@@ -64,7 +64,8 @@
             "dst": [
                 "minttea@:*",
                 "sfurs@:*",
-                "openclaw@:*"
+                "openclaw@:*",
+                "tag:openclaw-vm:*"
             ]
         },
         {
