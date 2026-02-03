@@ -267,6 +267,10 @@ in
   ############################
   # Nix binary cache options
 
+  programs.ssh.extraConfig = ''
+    Include /etc/ssh/ssh_config.d/*.conf
+  '';
+
   environment.etc."ssh/ssh_config.d/nix-builders.conf".text = ''
     Host desktop.tsnet.vpn.dhpham.com
       Port 8108
