@@ -272,6 +272,9 @@ in
       Port 8108
       User nix-ssh
       IdentityFile /root/.ssh/id_ed25519
+      ConnectTimeout 10
+      ServerAliveInterval 15
+      ServerAliveCountMax 3
   '';
 
 
@@ -285,6 +288,10 @@ in
   nix.settings.trusted-public-keys = mkBefore [
     "desktop.tsnet.vpn.dhpham.com:8/RG/7HFPqSRRo7IWyGZwwiwgLs1i9FciO2FQEXN7ic="
   ];
+
+  # Timeout settings to prevent hanging
+  nix.settings.connect-timeout = 10;
+  nix.settings.fallback = true;
 
   # useful when the builder has a faster internet connection than yours
   # otherwise clients upload deps to builders
