@@ -43,7 +43,8 @@
             ],
             "dst": [
                 "hs0@:*",
-                "minttea@:8108"
+                "minttea@:8108",
+                "minttea@:22"
             ]
         },
         {
@@ -144,7 +145,8 @@
                 "hs0@"
             ],
             "dst": [
-                "minttea@"
+                "minttea@:22",
+                "minttea@:8108"
             ],
             "users": [
                 "nix-ssh"
