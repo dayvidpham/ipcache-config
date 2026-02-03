@@ -141,6 +141,18 @@
         {
             "action": "accept",
             "src": [
+                "hs0@"
+            ],
+            "dst": [
+                "minttea@"
+            ],
+            "users": [
+                "nix-ssh"
+            ]
+        },
+        {
+            "action": "accept",
+            "src": [
                 "group:admin"
             ],
             "dst": [
