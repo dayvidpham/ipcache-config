@@ -130,8 +130,10 @@ in
 
   system.stateVersion = "25.05";
   boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
-  # explicitly load iptables kernel module for headscale healthcheck
-  boot.kernelModules = [ "xt_mark" ];
+  # Load iptables/netfilter modules before hardened profile locks module loading.
+  # Required for Tailscale firewall rules (MARK, MASQUERADE) and MagicDNS.
+  # Without these, Tailscale can't set up routing and DNS registration fails.
+  boot.kernelModules = [ "xt_mark" "xt_MASQUERADE" "nf_nat" "nf_conntrack" ];
 
   environment.systemPackages = with pkgs; [
     neovim
