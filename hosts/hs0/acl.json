@@ -146,63 +146,88 @@
             ]
         }
     ],
+    // Tailscale SSH rules — interactive access only, no service accounts
+    // nix-ssh is intentionally excluded: nix builder uses OpenSSH on port 8108
     "ssh": [
         {
             "action": "accept",
             "src": [
+                "group:admin",
+                "minttea@"
+            ],
+            "dst": [
                 "hs0@"
             ],
-            "dst": [
-                "minttea@"
-            ],
             "users": [
-                "nix-ssh"
+                "app"
             ]
         },
         {
             "action": "accept",
             "src": [
-                "group:admin"
+                "group:admin",
+                "minttea@"
             ],
             "dst": [
-                "hs0@",
                 "tag:exit",
-                "minttea@",
-                "sfurs@",
-                "tag:builder",
-                "tag:openclaw-vm",
-                "openclaw@",
+                "exit@"
             ],
             "users": [
-                "autogroup:nonroot",
+                "app"
+            ]
+        },
+        {
+            "action": "accept",
+            "src": [
+                "group:admin",
+                "minttea@"
+            ],
+            "dst": [
+                "minttea@"
+            ],
+            "users": [
+                "minttea"
+            ]
+        },
+        {
+            "action": "accept",
+            "src": [
+                "group:admin",
+                "minttea@"
+            ],
+            "dst": [
+                "sfurs@"
+            ],
+            "users": [
                 "app",
-                "nix-ssh",
-                "builder",
-                "openclaw",
+                "builder"
             ]
         },
         {
             "action": "accept",
             "src": [
+                "group:admin",
                 "minttea@"
             ],
             "dst": [
-                "hs0@",
-                "tag:exit",
-                "exit@",
-                "sfurs@",
-                "tag:builder",
-                "minttea@",
-                "tag:openclaw-vm",
-                "openclaw@",
+                "tag:builder"
             ],
             "users": [
-                "autogroup:nonroot",
-		"app",
-		"minttea",
-                "nix-ssh",
-                "builder",
-                "openclaw",
+                "builder"
+            ]
+        },
+        {
+            "action": "accept",
+            "src": [
+                "group:admin",
+                "minttea@"
+            ],
+            "dst": [
+                "tag:openclaw-vm",
+                "openclaw@"
+            ],
+            "users": [
+                "openclaw"
             ]
         },
     ],
