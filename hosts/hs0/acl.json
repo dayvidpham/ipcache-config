@@ -123,6 +123,8 @@
                 "minttea@:8108",
                 "sfurs@:22",
                 "sfurs@:9204",
+                "tag:openclaw-vm:22",
+                "openclaw@:22",
             ]
         },
         { // allow admins to ssh into others
@@ -139,6 +141,8 @@
                 "minttea@:8108",
                 "sfurs@:22",
                 "sfurs@:9204",
+                "tag:openclaw-vm:22",
+                "openclaw@:22",
             ]
         }
     ],
@@ -166,12 +170,15 @@
                 "minttea@",
                 "sfurs@",
                 "tag:builder",
+                "tag:openclaw-vm",
+                "openclaw@",
             ],
             "users": [
                 "autogroup:nonroot",
                 "app",
                 "nix-ssh",
                 "builder",
+                "openclaw",
             ]
         },
         {
@@ -185,7 +192,9 @@
                 "exit@",
                 "sfurs@",
                 "tag:builder",
-                "minttea@"
+                "minttea@",
+                "tag:openclaw-vm",
+                "openclaw@",
             ],
             "users": [
                 "autogroup:nonroot",
@@ -193,6 +202,7 @@
 		"minttea",
                 "nix-ssh",
                 "builder",
+                "openclaw",
             ]
         },
     ],
