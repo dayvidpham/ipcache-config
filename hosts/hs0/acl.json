@@ -46,6 +46,7 @@
             ],
             "dst": [
                 "hs0@:*",
+                "minttea@:5000",
                 "minttea@:8108",
                 "minttea@:22"
             ]

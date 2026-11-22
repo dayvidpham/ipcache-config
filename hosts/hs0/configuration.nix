@@ -274,6 +274,15 @@ in
     Include /etc/ssh/ssh_config.d/*.conf
   '';
 
+  programs.ssh.knownHosts."desktop.tsnet.vpn.dhpham.com" = {
+    extraHostNames = [
+      "[desktop.tsnet.vpn.dhpham.com]:8108"
+      "100.64.0.3"
+      "[100.64.0.3]:8108"
+    ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO1d2+lhCzdhrxaL8qrA5UW9WCzICyUpVlt+erBZFdk1";
+  };
+
   environment.etc."ssh/ssh_config.d/nix-builders.conf".text = ''
     Host desktop.tsnet.vpn.dhpham.com
       Port 8108
@@ -287,17 +296,17 @@ in
 
   nix.distributedBuilds = true;
   nix.settings.substituters = mkBefore [
-    "ssh-ng://nix-ssh@desktop.tsnet.vpn.dhpham.com?priority=1"
+    "http://desktop.tsnet.vpn.dhpham.com:5000?priority=1"
   ];
   nix.settings.trusted-substituters = mkBefore [
-    "ssh-ng://nix-ssh@desktop.tsnet.vpn.dhpham.com?priority=1"
+    "http://desktop.tsnet.vpn.dhpham.com:5000?priority=1"
   ];
   nix.settings.trusted-public-keys = mkBefore [
     "desktop.tsnet.vpn.dhpham.com:8/RG/7HFPqSRRo7IWyGZwwiwgLs1i9FciO2FQEXN7ic="
   ];
 
-  # Timeout settings to prevent hanging
-  nix.settings.connect-timeout = 10;
+  # Timeout settings to prevent hanging when desktop is offline
+  nix.settings.connect-timeout = 5;
   nix.settings.fallback = true;
 
   # useful when the builder has a faster internet connection than yours
