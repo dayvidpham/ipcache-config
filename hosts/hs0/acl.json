@@ -1,4 +1,7 @@
 {
+    "hosts": {
+        "desktop": "100.64.0.3"
+    },
     "groups": {
         "group:helm": [
             "hs0@"
@@ -46,9 +49,7 @@
             ],
             "dst": [
                 "hs0@:*",
-                "minttea@:5000",
-                "minttea@:8108",
-                "minttea@:22"
+                "desktop:5000"
             ]
         },
         {

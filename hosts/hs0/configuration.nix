@@ -268,33 +268,9 @@ in
 
 
   ############################
-  # Nix binary cache options
+  # Nix binary cache options (read-only Harmonia HTTP cache on desktop over Tailscale)
 
-  programs.ssh.extraConfig = ''
-    Include /etc/ssh/ssh_config.d/*.conf
-  '';
-
-  programs.ssh.knownHosts."desktop.tsnet.vpn.dhpham.com" = {
-    extraHostNames = [
-      "[desktop.tsnet.vpn.dhpham.com]:8108"
-      "100.64.0.3"
-      "[100.64.0.3]:8108"
-    ];
-    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO1d2+lhCzdhrxaL8qrA5UW9WCzICyUpVlt+erBZFdk1";
-  };
-
-  environment.etc."ssh/ssh_config.d/nix-builders.conf".text = ''
-    Host desktop.tsnet.vpn.dhpham.com
-      Port 8108
-      User nix-ssh
-      IdentityFile /root/.ssh/id_ed25519
-      ConnectTimeout 10
-      ServerAliveInterval 15
-      ServerAliveCountMax 3
-  '';
-
-
-  nix.distributedBuilds = true;
+  nix.distributedBuilds = false;
   nix.settings.substituters = mkBefore [
     "http://desktop.tsnet.vpn.dhpham.com:5000?priority=1"
   ];
@@ -308,33 +284,5 @@ in
   # Timeout settings to prevent hanging when desktop is offline
   nix.settings.connect-timeout = 5;
   nix.settings.fallback = true;
-
-  # useful when the builder has a faster internet connection than yours
-  # otherwise clients upload deps to builders
-  nix.settings.builders-use-substitutes = true;
-
-  nix.buildMachines = [
-    {
-      # Will be used to call "ssh builder" to connect to the builder machine.
-      # The details of the connection (user, port, url etc.)
-      # are taken from your "~/.ssh/config" file.
-      hostName = "desktop.tsnet.vpn.dhpham.com";
-      # CPU architecture of the builder, and the operating system it runs.
-      systems = [ "aarch64-linux" "x86_64-linux" ];
-      # ssh-ng is a Nix custom ssh-variant that avoids lots of "trusted-users" settings pain
-      protocol = "ssh-ng";
-
-      sshUser = "nix-ssh";
-      publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSU8xZDIrbGhDemRocnhhTDhxckE1VVc5V0N6SUN5VXBWbHQrZXJCWkZkazEgcm9vdEBkZXNrdG9wCg==";
-
-      # default is 1 but may keep the builder idle in between builds
-      maxJobs = 16;
-      # how fast is the builder compared to your local machine
-      speedFactor = 8;
-      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ]
-        ++ [ "nix-command" "flakes" "fetch-closure" ]
-      ;
-    }
-  ];
 }
 
