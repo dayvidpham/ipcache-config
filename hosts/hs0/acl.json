@@ -149,7 +149,9 @@
         }
     ],
     // Tailscale SSH rules — interactive access only, no service accounts
-    // nix-ssh is intentionally excluded: nix builder uses OpenSSH on port 8108
+    // nix-ssh is intentionally excluded: OpenSSH on port 22/8108 is governed by `acls` above.
+    // Headscale >=0.28 requires `autogroup:self` for same-user SSH and tag destinations
+    // for cross-user Tailscale SSH (user destinations like hs0@/exit@/sfurs@/openclaw@ are rejected).
     "ssh": [
         {
             "action": "accept",
@@ -158,7 +160,7 @@
                 "minttea@"
             ],
             "dst": [
-                "hs0@"
+                "tag:exit"
             ],
             "users": [
                 "app"
@@ -167,42 +169,13 @@
         {
             "action": "accept",
             "src": [
-                "group:admin",
                 "minttea@"
             ],
             "dst": [
-                "tag:exit",
-                "exit@"
-            ],
-            "users": [
-                "app"
-            ]
-        },
-        {
-            "action": "accept",
-            "src": [
-                "group:admin",
-                "minttea@"
-            ],
-            "dst": [
-                "minttea@"
+                "autogroup:self"
             ],
             "users": [
                 "minttea"
-            ]
-        },
-        {
-            "action": "accept",
-            "src": [
-                "group:admin",
-                "minttea@"
-            ],
-            "dst": [
-                "sfurs@"
-            ],
-            "users": [
-                "app",
-                "builder"
             ]
         },
         {
@@ -225,8 +198,7 @@
                 "minttea@"
             ],
             "dst": [
-                "tag:openclaw-vm",
-                "openclaw@"
+                "tag:openclaw-vm"
             ],
             "users": [
                 "openclaw"
