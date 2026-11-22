@@ -21,7 +21,6 @@ in
   imports = [
     # oci-common includes qemu-guest
     "${modulesPath}/virtualisation/oci-common.nix"
-    "${modulesPath}/profiles/hardened.nix"
   ];
 
   ####################################
@@ -59,7 +58,20 @@ in
   # General system
 
   system.stateVersion = "25.05";
-  boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
+  # Standard LTS kernel (linuxPackages_*_hardened and profiles/hardened.nix were
+  # removed in NixOS 26.05). Explicit kernel hardening sysctls are applied below.
+  boot.kernelPackages = pkgs.linuxPackages;
+  security.protectKernelImage = true;
+  boot.kernel.sysctl = {
+    "kernel.kptr_restrict" = 2;
+    "kernel.dmesg_restrict" = 1;
+    "kernel.unprivileged_bpf_disabled" = 1;
+    "net.core.bpf_jit_harden" = 2;
+    "kernel.yama.ptrace_scope" = 1;
+    "fs.protected_hardlinks" = 1;
+    "fs.protected_symlinks" = 1;
+    "fs.suid_dumpable" = 0;
+  };
   # explicitly load iptables kernel module for headscale healthcheck
   boot.kernelModules = [ "xt_mark" ];
 

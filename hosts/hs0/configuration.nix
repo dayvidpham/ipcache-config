@@ -21,7 +21,6 @@ in
   imports = [
     # oci-common includes qemu-guest
     "${modulesPath}/virtualisation/oci-common.nix"
-    "${modulesPath}/profiles/hardened.nix"
   ];
 
   ####################################
@@ -129,11 +128,21 @@ in
   # General system
 
   system.stateVersion = "25.05";
-  boot.kernelPackages = pkgs.linuxPackages_6_12_hardened;
-  # Load iptables/netfilter modules before hardened profile locks module loading.
-  # Required for Tailscale firewall rules (MARK, MASQUERADE) and MagicDNS.
-  # Without these, Tailscale can't set up routing and DNS registration fails.
+  # Standard LTS kernel (linuxPackages_*_hardened and profiles/hardened.nix were
+  # removed in NixOS 26.05). Explicit kernel hardening sysctls are applied below.
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelModules = [ "xt_mark" "xt_MASQUERADE" "nf_nat" "nf_conntrack" ];
+  security.protectKernelImage = true;
+  boot.kernel.sysctl = {
+    "kernel.kptr_restrict" = 2;
+    "kernel.dmesg_restrict" = 1;
+    "kernel.unprivileged_bpf_disabled" = 1;
+    "net.core.bpf_jit_harden" = 2;
+    "kernel.yama.ptrace_scope" = 1;
+    "fs.protected_hardlinks" = 1;
+    "fs.protected_symlinks" = 1;
+    "fs.suid_dumpable" = 0;
+  };
 
   environment.systemPackages = with pkgs; [
     neovim
