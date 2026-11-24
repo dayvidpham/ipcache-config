@@ -82,24 +82,13 @@
                 "sfurs@:*"
             ]
         },
-        { // allow pretty much everybody to contact the exit nodes
-            // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
+        { // allow internet traffic through exit nodes, not direct access to their services
             "action": "accept",
             "src": [
                 "*"
             ],
             "dst": [
                 "autogroup:internet:*"
-            ]
-        },
-        { // allow pretty much everybody to contact the exit nodes
-            // ideally, don't want the tag:internal to do this, but don't even have any internal services yet
-            "action": "accept",
-            "src": [
-                "*"
-            ],
-            "dst": [
-                "tag:exit:*"
             ]
         },
         { // allow admins to ping everybody
