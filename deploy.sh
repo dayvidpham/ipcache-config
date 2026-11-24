@@ -234,10 +234,10 @@ cleanup_remote() {
 trap cleanup_remote EXIT
 
 if [[ -n "$pull_cache_url" ]]; then
-  echo "  -> Fetching signed closure from $pull_cache_url as root..."
+  echo "  -> Fetching signed closure from $pull_cache_url into $(hostname)'s /nix/store (via sudo)..."
   nix copy --from "$pull_cache_url" "$toplevel"
 elif [[ -n "$remote_nar" ]]; then
-  echo "  -> Importing store paths as root..."
+  echo "  -> Importing store paths into $(hostname)'s /nix/store (via sudo)..."
   $decomp_cmd "$remote_nar" | nix-store --import >/dev/null
   rm -f "$remote_nar"
   remote_nar=""
