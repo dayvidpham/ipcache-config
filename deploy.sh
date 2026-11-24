@@ -28,7 +28,7 @@ Arguments:
 Options:
   --target STR       SSH destination (default: app@<host>.tsnet.vpn.dhpham.com)
   --arch STR         Override target Nix system (default: auto-detected via `uname -m`)
-  --cache-url URL    HTTP binary cache URL (default: http://desktop.tsnet.vpn.dhpham.com:5000)
+  --cache-url URL    HTTP binary cache URL (default: http://desktop:5000)
   --no-cache         Skip Harmonia cache probe and always stream delta over SSH
   --full             With SSH transfer, export the entire closure instead of the delta
   -h, --help         Show this help
@@ -46,7 +46,7 @@ action="switch"
 action_set=0
 target=""
 arch=""
-cache_url="http://desktop.tsnet.vpn.dhpham.com:5000"
+cache_url="http://desktop:5000"
 use_cache=1
 full_export=0
 

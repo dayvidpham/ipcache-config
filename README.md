@@ -9,7 +9,7 @@ Nix flake containing Oracle Cloud VM configurations (`hs0`, `portal`).
 - **No root SSH** — connects as `app`
 - **`app` stays untrusted** — not added to Nix `allowed-users` or `trusted-users`
 - **Interactive `sudo`** — prompts for `app`'s password once per deploy
-- **Desktop Harmonia cache with automatic fallback** — builds locally on `desktop`, pulls signed store paths from `http://desktop.tsnet.vpn.dhpham.com:5000` (Tailscale-only Harmonia cache) when reachable, and automatically falls back to streaming the `/nix/store` delta over forward SSH when the cache isn't reachable
+- **Desktop Harmonia cache with automatic fallback** — builds locally on `desktop`, pulls signed store paths from `http://desktop:5000` (Tailscale-only Harmonia cache) when reachable, and automatically falls back to streaming the `/nix/store` delta over forward SSH when the cache isn't reachable
 
 ```bash
 # Preview unit restarts without applying
@@ -30,5 +30,5 @@ Nix flake containing Oracle Cloud VM configurations (`hs0`, `portal`).
 From `hs0` (or `flowX13`):
 
 ```bash
-curl -fsS http://desktop.tsnet.vpn.dhpham.com:5000/nix-cache-info
+curl -fsS http://desktop:5000/nix-cache-info
 ```

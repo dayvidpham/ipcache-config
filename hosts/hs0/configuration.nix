@@ -282,10 +282,10 @@ in
 
   nix.distributedBuilds = false;
   nix.settings.substituters = mkBefore [
-    "http://desktop.tsnet.vpn.dhpham.com:5000?priority=1"
+    "http://desktop:5000?priority=1"
   ];
   nix.settings.trusted-substituters = mkBefore [
-    "http://desktop.tsnet.vpn.dhpham.com:5000?priority=1"
+    "http://desktop:5000?priority=1"
   ];
   nix.settings.trusted-public-keys = mkBefore [
     "desktop.tsnet.vpn.dhpham.com:8/RG/7HFPqSRRo7IWyGZwwiwgLs1i9FciO2FQEXN7ic="
