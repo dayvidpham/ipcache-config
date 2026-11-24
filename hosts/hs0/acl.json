@@ -23,6 +23,10 @@
     // tag: specifies the class or role of a machine
     // tagOwners are groups that can attempt to opt their own machines into having the role
     "tagOwners": {
+        "tag:helm": [
+            "group:helm",
+            "group:admin"
+        ],
         "tag:exit": [
             "group:exit",
             "exit@"
@@ -45,10 +49,12 @@
         {
             "action": "accept",
             "src": [
-                "hs0@"
+                "hs0@",
+                "tag:helm"
             ],
             "dst": [
                 "hs0@:*",
+                "tag:helm:*",
                 "desktop:5000"
             ]
         },
@@ -108,6 +114,7 @@
             ],
             "dst": [
                 "group:border:22",
+                "tag:helm:22",
                 "tag:exit:22",
                 "hs0@:22",
                 "minttea@:22",
@@ -125,6 +132,7 @@
             ],
             "dst": [
                 "group:border:22",
+                "tag:helm:22",
                 "tag:exit:22",
                 "hs0@:22",
                 "exit@:22",
@@ -142,6 +150,19 @@
     // Headscale >=0.28 requires `autogroup:self` for same-user SSH and tag destinations
     // for cross-user Tailscale SSH (user destinations like hs0@/exit@/sfurs@/openclaw@ are rejected).
     "ssh": [
+        {
+            "action": "accept",
+            "src": [
+                "group:admin",
+                "minttea@"
+            ],
+            "dst": [
+                "tag:helm"
+            ],
+            "users": [
+                "app"
+            ]
+        },
         {
             "action": "accept",
             "src": [

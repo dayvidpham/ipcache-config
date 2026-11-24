@@ -108,6 +108,7 @@ in
     enable = true;
     openFirewall = true;
     authKeyParameters.baseUrl = "https://hs0.vpn.dhpham.com";
+    extraSetFlags = [ "--ssh" ];
   };
   networking.firewall = {
     checkReversePath = "loose";
